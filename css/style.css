@@ -1,0 +1,26 @@
+body { 
+	padding:2em; 
+	font : 100%/1.4 'Helvetica Neue', arial, helvetica, helve, sans-serif; 	
+	background: #202020;
+	color: #fff;
+	}
+
+h1 { 
+	font-size:2.2em; 
+	padding:0 0 .5em 0; 
+	}
+
+h2 { 
+	font-size:1.5em; 
+	}
+
+.header { 
+	padding:1em 0; 
+	}
+
+.col { 
+	padding:1em 0; 
+	text-align:center;
+	}
+
+
