@@ -46,8 +46,6 @@ function updateView() {
     var dropdown = $('#needleDropDown')[0];
     var option = dropdown.options[dropdown.selectedIndex];
     setNeedleImage(option.value)
-    $("#registrationMode option:eq(0)").attr("selected", "selected");
-    setRegistrationMode(false);
     $("#imageToSwap").css("visibility", "visible");
 }
 
@@ -91,6 +89,8 @@ function setNeedleImage(imageId) {
         src = "imgs/Case11_15_before.gif"
     src = src.replace(/_[0-9]*_/, "_"+imageId+"_");
     $('#imageToSwap').attr('src', src);
+    $("#registrationMode option:eq(0)").attr("selected", "selected");
+    setRegistrationMode(false);
 }
 
 
