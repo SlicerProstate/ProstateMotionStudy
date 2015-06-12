@@ -1,26 +1,53 @@
+
 body { 
-	padding:2em; 
-	font : 100%/1.4 'Helvetica Neue', arial, helvetica, helve, sans-serif; 	
-	background: #202020;
+	padding:30px; 
+	font : 100% 'Helvetica Neue', arial, helvetica, helve, sans-serif; 	
+	background: #252525;
 	color: #fff;
 	}
 
 h1 { 
-	font-size:2.2em; 
+	font-size:23px; 
 	padding:0 0 .5em 0; 
+	float: left;
 	}
 
 h2 { 
-	font-size:1.5em; 
+	font-size:15px;
+	margin-bottom: 1.0em; 
+	margin-top: 1.0em;
 	}
 
 .header { 
-	padding:1em 0; 
+	padding:2em 0; 
 	}
 
-.col { 
+.col {  
 	padding:1em 0; 
-	text-align:center;
+	text-align:left;
+	background: none;
 	}
+	
+p{
+	font-size:13px;
+	float:left;
+	margin-right: 1em;
+	
+}
 
-
+select{
+	border-radius: 0;
+	-webkit-appearance: none;
+    border:1px solid #BEBEBE;
+    padding: 8px;
+    width : 80px;
+  	margin-top: -7px;
+  	color:#fff;
+  	height:30px;
+  	background: url('imgs/arrow-3.png') no-repeat right #252525;
+}
+img.special{
+position: relative;
+left: -20px;
+top: 33px;
+}

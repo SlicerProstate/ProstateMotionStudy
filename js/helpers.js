@@ -27,8 +27,8 @@ function setupPatients() {
     var contents = db.exec("SELECT id FROM Cases");
     var dropdown = $('#patientDropDown')[0];
     setupDropDown(dropdown, contents[0].values);
-     
-     // setPatientId(firstPatientId);
+    var patientId = dropdown.options[dropdown.selectedIndex];
+    setPatientId(patientId.value);
 }
 
 function setPatientId(selectedPatientID) {
@@ -48,6 +48,7 @@ function updateView() {
     setNeedleImage(option.value)
     $("#registrationMode option:eq(0)").attr("selected", "selected");
     setRegistrationMode(false);
+    $("#imageToSwap").css("visibility", "visible");
 }
 
 function setupDropDown(dropdown, ids) {
@@ -86,6 +87,8 @@ function setRegistrationMode(useRegistration) {
 
 function setNeedleImage(imageId) {
     var src = $('#imageToSwap').attr('src');
+    if(src == "")
+        src = "imgs/Case11_15_before.gif"
     src = src.replace(/_[0-9]*_/, "_"+imageId+"_");
     $('#imageToSwap').attr('src', src);
 }
