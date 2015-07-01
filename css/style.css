@@ -47,20 +47,20 @@ img.special{
     position: relative;
     left: -20px;
     top: 33px;
-    }
+}
 
 .btn {
-  font-family: Arial;
-  color: #ffffff;
-  font-size: 20em;
-  background: #252525;
-  padding: 10px 20px 10px 20px;
-  border: solid #ffffff 1px;
-  text-decoration: none;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 20em;
+    background: #252525;
+    padding: 10px 20px 10px 20px;
+    border: solid #ffffff 1px;
+    text-decoration: none;
 }
 
 .btn:hover {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .firefoxFix {
@@ -74,4 +74,9 @@ p.padded {
 
 nopadding {
     padding: 0;
+}
+
+.spacer {
+   /* margin: 1% 0 1% 1.6%; */ 
+   margin: 5% 0 5% 0;
 }
