@@ -63,10 +63,7 @@ img.special{
   text-decoration: none;
 }
 
-.right {
-    float: right;    
-    padding: 0;
-    margin: 0;
+.firefoxFix {
     font-size: 18px;
 }
 
