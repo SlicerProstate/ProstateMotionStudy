@@ -32,7 +32,6 @@ p{
 	font-size:13px;
 	float:left;
 	margin-right: 1em;
-	
 }
 
 select{
@@ -44,7 +43,7 @@ select{
   	margin-top: -7px;
   	color:#fff;
   	height:30px;
-  	background: url('imgs/arrow-3.png') no-repeat right #252525;
+  	background: url('../imgs/arrow-3.png') no-repeat right #252525;
 }
 img.special{
 position: relative;
@@ -55,7 +54,7 @@ top: 33px;
 .btn {
   font-family: Arial;
   color: #ffffff;
-  font-size: 20px;
+  font-size: 20em;
   background: #252525;
   padding: 10px 20px 10px 20px;
   border: solid #ffffff 1px;
@@ -64,4 +63,10 @@ top: 33px;
 
 .btn:hover {
   text-decoration: none;
+}
+
+.right {
+    float: right;    
+    padding: 0;
+    margin: 0;
 }
