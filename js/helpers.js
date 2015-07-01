@@ -31,15 +31,24 @@ function setupPatients() {
     setPatientId(patientId.value);
 }
 
-function setPatientId(selectedPatientID) {
-    patientId = selectedPatientID;
-    var contents = db.exec("SELECT imageId FROM images where caseId="+patientId);
+function setPatientId(selectedPatientId) {
+    var contents = db.exec("SELECT imageId FROM images where caseId="+selectedPatientId);
     var dropdown = document.getElementById('needleDropDown');
     setupDropDown(dropdown, contents[0].values);
     updateView();
     var src = $('#imageToSwap').attr('src');
-    src = src.replace(/Case[0-9]*_/, "Case"+patientId+"_");
+    src = src.replace(/Case[0-9]*_/, "Case"+selectedPatientId+"_");
     $('#imageToSwap').attr('src', src);
+    updateDSCForPatientId(selectedPatientId);
+}
+
+function updateDSCForPatientId(patientId) {
+    var contents = db.exec("SELECT before, after FROM DSC where caseId="+patientId);
+    contents = contents[0].values[0];
+    var before = contents[0];
+    var after = contents[1];
+    $('#before').text("DSC before registration: " + before);
+    $('#after').text("DSC after registration: " + after);
 }
 
 function updateView() {
@@ -74,9 +83,7 @@ function addOption(element, value) {
 function setRegistrationMode(useRegistration) {
     var src = $('#imageToSwap').attr('src');
     if(useRegistration == "true") {
-        src = src.replace('before','after');
-            console.log(useRegistration);
-
+        src = src.replace('before','after');         
     } else {
         src = src.replace('after','before');
     }
