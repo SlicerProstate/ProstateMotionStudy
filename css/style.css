@@ -1,55 +1,53 @@
 
 body { 
-	padding:30px; 
-	font : 100% 'Helvetica Neue', arial, helvetica, helve, sans-serif; 	
-	background: #252525;
-	color: #fff;
-	}
+    padding:30px; 
+    font : 100% 'Helvetica Neue', arial, helvetica, helve, sans-serif; 	
+    background: #252525;
+    color: #fff;
+}
 
 h1 { 
-	font-size:23px; 
-	padding:0 0 .5em 0; 
-	float: left;
-	}
+    font-size:23px; 
+    padding:0 0 .5em 0; 
+    float: left;
+}
 
 h2 { 
-	font-size:15px;
-	margin-bottom: 1.0em; 
-	margin-top: 1.0em;
-	}
+    font-size:15px;
+    margin-bottom: 1.0em; 
+    margin-top: 1.0em;
+}
 
 .header { 
-	padding:2em 0; 
-	}
+    padding:2em 0; 
+}
 
 .col {  
-	padding:1em 0; 
-	text-align:left;
-	background: none;
-	}
+    padding:1em 0; 
+    text-align:left;
+    background: none;
+}
 	
 p{
-	font-size:13px;
-	float:left;
-	margin-right: 1em;
+    font-size:13px;
+    float:left;
+    margin-right: 1em;
 }
 
 select{
-	border-radius: 0;
-	-webkit-appearance: none;
+    border-radius: 0;
+    -webkit-appearance: none;
     border:1px solid #BEBEBE;
-    padding: 8px;
+    padding: 4px;
     width : 80px;
-  	margin-top: -7px;
-  	color:#fff;
-  	height:30px;
-  	background: url('../imgs/arrow-3.png') no-repeat right #252525;
+    color:#fff;
+    background: url('../imgs/arrow-3.png') no-repeat right #252525;
 }
 img.special{
-position: relative;
-left: -20px;
-top: 33px;
-}
+    position: relative;
+    left: -20px;
+    top: 33px;
+    }
 
 .btn {
   font-family: Arial;
@@ -70,4 +68,13 @@ top: 33px;
     padding: 0;
     margin: 0;
     font-size: 18px;
+}
+
+p.padded {
+    padding-bottom: 4px;
+    padding-top: 4px;
+}
+
+nopadding {
+    padding: 0;
 }
