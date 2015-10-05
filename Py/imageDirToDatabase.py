@@ -3,13 +3,6 @@ __author__ = 'Christian'
 import sqlite3
 import sys, getopt, os
 
-#parsing directory
-# setting database from gifs
-
-# id, caseID, imageId
-
-# sqlite database creation
-
 
 class NotDirectoryError(Exception):
   pass

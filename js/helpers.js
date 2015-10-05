@@ -7,9 +7,30 @@
 var db = null;
 var expanded = false;
 var rating = null;
+var currentReader = "";
+
+var baseURL = "http://spreadsheets.google.com/tq?key=1mSxSr0eM5W_24cDAnFNhsC9M7vtMan49vTMpRNhEY20"
+var baseFormURL = "https://docs.google.com/forms/d/19oCKyz9vxRMOwQBB6PQwpKRfqeIqukcT_qH5oMYAFjs/formResponse?ifq&"
+var concatenator = '&';
+var readerIDKey = "entry.318415835=";
+var caseIDKey = "entry.236657997=";
+var needleImageKey = "entry.1146735077=";
+var scoreKey = "entry.1353075101=";
+var brachytherapyKey = "entry.1945074577=";
+var hematomaKey = "entry.1651056543=";
+var locationsKey = "entry.928263532=";
+var submitKey = "submit=Submit";
+
+google.load('visualization', '1', {packages: []});
+
+//https://docs.google.com/forms/d/19oCKyz9vxRMOwQBB6PQwpKRfqeIqukcT_qH5oMYAFjs/formResponse?ifq&entry.318415835=Fedorov&
+// entry.236657997=11&entry.1146735077=2&entry.1353075101=4&entry.1945074577=yes&entry.1651056543=yes&
+// entry.928263532=Apex&entry.928263532=Mid-gland&submit=Submit
+
 
 $(document).ready(function() {
 
+    $('.fancybox').fancybox();
 
     $('input[name="rating"]').change(function(){
         $("#ratingResultDisplay").text($(this).next('label').attr("title"));
@@ -24,7 +45,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#submitForm").submit(function() {
+    $("#assessmentForm").submit(function() {
         var locations = [];
         var hematoma = $("#HematomaCheckbox")[0].checked;
         if (hematoma)
@@ -34,24 +55,80 @@ $(document).ready(function() {
         // create json data from form
         if (rating == null) {
             alert("Please rate the registration result!")
+        } else if (currentReader == ""){
+            alert("Please select current reader!")
         } else {
-            $.post($(this).attr('action'), $(this).serialize(), function (response) {
-                // do something here on success
-            }, 'json');
+            var url = buildURLFromForm();
+            $("#submitLink").attr('href', url)
+            $("#submitLink").click()
             rating = null;
-            document.getElementById("submitForm").reset();
+            clearAssessmentForm();
             closeLocationDropdown();
+
+            setTimeout(function() {
+                updateAssessmentStatus(getCurrentCaseID(), getCurrentNeedleImageID());
+            }, 2000);
         }
         return false;
     });
     setupDatabaseConnection();
 });
 
+function buildURLFromForm() {
+    var url = baseFormURL + readerIDKey + currentReader + concatenator +
+                            caseIDKey   + getCurrentCaseID() + concatenator +
+                            needleImageKey + getCurrentNeedleImageID() + concatenator +
+                            scoreKey + rating + concatenator +
+                            brachytherapyKey + getCheckBoxStatus('BrachytherapyCheckbox') + concatenator +
+                            hematomaKey + getCheckBoxStatus('HematomaCheckbox') + concatenator;
+    if (getCheckBoxStatus('HematomaCheckbox') == "yes") {
+        locations = getCheckedLocations();
+        locations.forEach(function(location) {
+            url += locationsKey + location + concatenator;
+        })
+    }
+
+    url += concatenator + submitKey
+
+    return url;
+}
+
+function getCheckBoxStatus(id) {
+    return ($("#" + id)[0].checked) ? "yes" : "no"
+}
+
+function updateAssessmentStatus(caseID, needleID) {
+    var query = new google.visualization.Query(baseURL);
+    console.log('select A where C=' + caseID + ' and D=' + needleID);
+    query.setQuery('select A where C=' + caseID + ' and D=' + needleID);
+
+    query.send(function(response) {
+        data = response.getDataTable();
+        //console.log(data);
+        var textToShow = "ASSESSMENT";
+        var color = "white";
+        if (data["Gf"].length == 1) {
+            $("#assessmentForm :input").prop('disabled', true);
+            color = 'green';
+            textToShow = "ASSESSMENT: Already assessed!";
+        } else {
+            $("#assessmentForm :input").prop('disabled', false);
+        }
+        $('#assessmentStatus').text(textToShow);
+        $('#assessmentStatus').css('color', color);
+    });
+}
+
 function closeLocationDropdown() {
     expanded = false;
     showCheckboxes();
 }
 
+function clearAssessmentForm() {
+    document.getElementById("assessmentForm").reset();
+    var element = document.getElementById('readerDropDown');
+    element.value = currentReader;
+}
 
 function getCheckedLocations() {
     var checkboxes = $("#checkboxes");
@@ -101,7 +178,7 @@ function setupDatabaseConnection() {
 }
 
 function setupPatients() {
-    var contents = db.exec("SELECT id FROM Cases");
+    var contents = db.exec("SELECT distinct caseID FROM Images");
     var dropdown = $('#patientDropDown')[0];
     setupDropDown(dropdown, contents[0].values);
     var patientId = dropdown.options[dropdown.selectedIndex];
@@ -109,23 +186,14 @@ function setupPatients() {
 }
 
 function setPatientId(selectedPatientId) {
-    var contents = db.exec("SELECT imageId FROM images where caseId="+selectedPatientId);
+    var contents = db.exec("SELECT imageId FROM images where caseId="+selectedPatientId+" ORDER BY imageId ASC");
     var dropdown = document.getElementById('needleDropDown');
     setupDropDown(dropdown, contents[0].values);
     updateView();
     var src = $('#imageToSwap').attr('src');
     src = src.replace(/Case[0-9]*_/, "Case"+selectedPatientId+"_");
     $('#imageToSwap').attr('src', src);
-    updateDSCForPatientId(selectedPatientId);
-}
-
-function updateDSCForPatientId(patientId) {
-    var contents = db.exec("SELECT before, after FROM DSC where caseId="+patientId);
-    contents = contents[0].values[0];
-    var before = contents[0];
-    var after = contents[1];
-    $('#before').text("DSC before registration: " + before);
-    $('#after').text("DSC after registration: " + after);
+    clearAssessmentForm();
 }
 
 function updateView() {
@@ -167,6 +235,14 @@ function setRegistrationMode(useRegistration) {
     $('#imageToSwap').attr('src', src);
 }
 
+function getCurrentCaseID() {
+    return document.getElementById('patientDropDown').value
+}
+
+function getCurrentNeedleImageID() {
+    return document.getElementById('needleDropDown').value
+}
+
 function setNeedleImage(imageId) {
     var src = $('#imageToSwap').attr('src');
     if(src == "")
@@ -175,9 +251,10 @@ function setNeedleImage(imageId) {
     $('#imageToSwap').attr('src', src);
     $("#registrationMode option:eq(0)").attr("selected", "selected");
     setRegistrationMode(false);
+    clearAssessmentForm();
+    updateAssessmentStatus(getCurrentCaseID(), imageId);
 }
 
-
-// 1. when other resluts are displayed, check if assessment if evaluation has already be done and disable if so
-// 2. checking hematoma activates widget for checking locations
-
+function setCurrentReader(readerName) {
+    currentReader = readerName;
+}
