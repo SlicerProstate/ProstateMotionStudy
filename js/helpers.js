@@ -55,8 +55,10 @@ $(document).ready(function() {
         // create json data from form
         if (rating == null) {
             alert("Please rate the registration result!")
-        } else if (currentReader == ""){
+        } else if (currentReader == "") {
             alert("Please select current reader!")
+        } else if (hematoma && locations.length == 0) {
+            alert("Please select hematoma locations!")
         } else {
             var url = buildURLFromForm();
             $("#submitLink").attr('href', url)
