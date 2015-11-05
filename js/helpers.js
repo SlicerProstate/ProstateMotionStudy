@@ -99,7 +99,7 @@ function getCheckBoxStatus(id) {
 
 function updateAssessmentStatus(caseID, needleID) {
     var query = new google.visualization.Query(baseURL);
-    console.log('select A where C=' + caseID + ' and D=' + needleID);
+    //console.log('select A where C=' + caseID + ' and D=' + needleID);
     query.setQuery('select A where C=' + caseID + ' and D=' + needleID);
 
     query.send(function(response) {
@@ -178,7 +178,7 @@ function setupDatabaseConnection() {
 }
 
 function setupPatients() {
-    var contents = db.exec("SELECT distinct caseID FROM Images");
+    var contents = db.exec("SELECT distinct caseID FROM Images ORDER BY caseID ASC");
     var dropdown = $('#patientDropDown')[0];
     setupDropDown(dropdown, contents[0].values);
     var patientId = dropdown.options[dropdown.selectedIndex];
@@ -246,7 +246,7 @@ function getCurrentNeedleImageID() {
 function setNeedleImage(imageId) {
     var src = $('#imageToSwap').attr('src');
     if(src == "")
-        src = "imgs/Case11_15_before.gif"
+        src = "gifs/Case11_15_before.gif"
     src = src.replace(/_[0-9]*_/, "_"+imageId+"_");
     $('#imageToSwap').attr('src', src);
     $("#registrationMode option:eq(0)").attr("selected", "selected");
