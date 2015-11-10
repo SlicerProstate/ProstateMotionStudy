@@ -5,17 +5,15 @@
  */
 
 var db = null;
-var expanded = false;
-var rating = null;
 var currentReader = "";
 
-var baseURL = "http://spreadsheets.google.com/tq?key=1mSxSr0eM5W_24cDAnFNhsC9M7vtMan49vTMpRNhEY20"
-var baseFormURL = "https://docs.google.com/forms/d/19oCKyz9vxRMOwQBB6PQwpKRfqeIqukcT_qH5oMYAFjs/formResponse?ifq&"
+var baseURL = "http://spreadsheets.google.com/tq?key=1mSxSr0eM5W_24cDAnFNhsC9M7vtMan49vTMpRNhEY20";
+var baseFormURL = "https://docs.google.com/forms/d/19oCKyz9vxRMOwQBB6PQwpKRfqeIqukcT_qH5oMYAFjs/formResponse?ifq&";
 var concatenator = '&';
 var readerIDKey = "entry.318415835=";
 var caseIDKey = "entry.236657997=";
 var needleImageKey = "entry.1146735077=";
-var scoreKey = "entry.1353075101=";
+var registrationFailureKey = "entry.1614988881=";
 var brachytherapyKey = "entry.1945074577=";
 var hematomaKey = "entry.1651056543=";
 var locationsKey = "entry.928263532=";
@@ -32,16 +30,11 @@ $(document).ready(function() {
 
     $('.fancybox').fancybox();
 
-    $('input[name="rating"]').change(function(){
-        $("#ratingResultDisplay").text($(this).next('label').attr("title"));
-        rating = $(this).val()
-    });
-
     $("#HematomaCheckbox").change(function() {
         if (!this.checked) {
-            closeLocationDropdown();
+          disableLocationCheckboxes(true);
         } else {
-            clearLocationCheckboxes();
+          disableLocationCheckboxes(false);
         }
     });
 
@@ -53,7 +46,7 @@ $(document).ready(function() {
 
         // check for valid data
         // create json data from form
-        if (rating == null) {
+        if (getCompleteFailureAnswer() == null) {
             alert("Please rate the registration result!")
         } else if (currentReader == "") {
             alert("Please select current reader!")
@@ -61,12 +54,9 @@ $(document).ready(function() {
             alert("Please select hematoma locations!")
         } else {
             var url = buildURLFromForm();
-            $("#submitLink").attr('href', url)
-            $("#submitLink").click()
-            rating = null;
+            $("#submitLink").attr('href', url);
+            $("#submitLink").click();
             clearAssessmentForm();
-            closeLocationDropdown();
-
             setTimeout(function() {
                 updateAssessmentStatus(getCurrentCaseID(), getCurrentNeedleImageID());
             }, 2000);
@@ -76,11 +66,15 @@ $(document).ready(function() {
     setupDatabaseConnection();
 });
 
+function disableLocationCheckboxes(disable) {
+  $("#checkboxes :input").prop('disabled', disable);
+}
+
 function buildURLFromForm() {
     var url = baseFormURL + readerIDKey + currentReader + concatenator +
                             caseIDKey   + getCurrentCaseID() + concatenator +
                             needleImageKey + getCurrentNeedleImageID() + concatenator +
-                            scoreKey + rating + concatenator +
+                            registrationFailureKey + getCompleteFailureAnswer() + concatenator +
                             brachytherapyKey + getCheckBoxStatus('BrachytherapyCheckbox') + concatenator +
                             hematomaKey + getCheckBoxStatus('HematomaCheckbox') + concatenator;
     if (getCheckBoxStatus('HematomaCheckbox') == "yes") {
@@ -90,9 +84,19 @@ function buildURLFromForm() {
         })
     }
 
-    url += concatenator + submitKey
+    url += concatenator + submitKey;
 
     return url;
+}
+
+function getCompleteFailureAnswer() {
+  var value = null;
+  try {
+    value = document.querySelector('input[name="completeFailure"]:checked').value;
+  } catch(err) {
+    value = null;
+  }
+  return value;
 }
 
 function getCheckBoxStatus(id) {
@@ -115,21 +119,18 @@ function updateAssessmentStatus(caseID, needleID) {
             textToShow = "ASSESSMENT: Already assessed!";
         } else {
             $("#assessmentForm :input").prop('disabled', false);
+            disableLocationCheckboxes(true)
         }
         $('#assessmentStatus').text(textToShow);
         $('#assessmentStatus').css('color', color);
     });
 }
 
-function closeLocationDropdown() {
-    expanded = false;
-    showCheckboxes();
-}
-
 function clearAssessmentForm() {
     document.getElementById("assessmentForm").reset();
     var element = document.getElementById('readerDropDown');
     element.value = currentReader;
+    disableLocationCheckboxes(true);
 }
 
 function getCheckedLocations() {
@@ -142,28 +143,6 @@ function getCheckedLocations() {
         }
     });
     return checkedLocations
-}
-
-function clearLocationCheckboxes() {
-    var checkboxes = $("#checkboxes");
-    var locations = checkboxes.find("input");
-    locations.each(function(index, checkbox) {
-        checkbox.checked = false;
-    });
-}
-
-function showCheckboxes() {
-    var checkboxes = document.getElementById("checkboxes");
-    var hematoma = document.getElementById("HematomaCheckbox").checked;
-    var width = $("#locations").width();
-    if (!expanded && hematoma) {
-        checkboxes.style.display = "block";
-        checkboxes.style.width = width-2+"px";
-        expanded = true;
-    } else {
-        checkboxes.style.display = "none";
-        expanded = false;
-    }
 }
 
 function setupDatabaseConnection() {
@@ -192,9 +171,10 @@ function setPatientId(selectedPatientId) {
     var dropdown = document.getElementById('needleDropDown');
     setupDropDown(dropdown, contents[0].values);
     updateView();
-    var src = $('#imageToSwap').attr('src');
+    var imageToSwap = $('#imageToSwap');
+    var src = imageToSwap.attr('src');
     src = src.replace(/Case[0-9]*_/, "Case"+selectedPatientId+"_");
-    $('#imageToSwap').attr('src', src);
+    imageToSwap.attr('src', src);
     clearAssessmentForm();
 }
 
@@ -228,13 +208,14 @@ function addOption(element, value) {
 }
 
 function setRegistrationMode(useRegistration) {
-    var src = $('#imageToSwap').attr('src');
+  var imageToSwap = $('#imageToSwap');
+  var src = imageToSwap.attr('src');
     if(useRegistration == "true") {
         src = src.replace('before','after');         
     } else {
         src = src.replace('after','before');
     }
-    $('#imageToSwap').attr('src', src);
+  imageToSwap.attr('src', src);
 }
 
 function getCurrentCaseID() {
@@ -246,12 +227,11 @@ function getCurrentNeedleImageID() {
 }
 
 function setNeedleImage(imageId) {
-    var src = $('#imageToSwap').attr('src');
-    if(src == "")
-        src = "gifs/Case11_15_before.gif"
+    var imageToSwap = $('#imageToSwap');
+    var src = imageToSwap.attr('src');
     src = src.replace(/_[0-9]*_/, "_"+imageId+"_");
-    $('#imageToSwap').attr('src', src);
-    $("#registrationMode option:eq(0)").attr("selected", "selected");
+    imageToSwap.attr('src', src);
+    $("#registrationMode option:eq(1)").attr("selected", "selected");
     setRegistrationMode(false);
     clearAssessmentForm();
     updateAssessmentStatus(getCurrentCaseID(), imageId);

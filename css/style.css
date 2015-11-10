@@ -41,7 +41,7 @@ select {
     padding: 4px;
     width : 80px;
     color:#fff;
-    background: url('../imgs/arrow-3.png') no-repeat right #252525;
+    background: url('../images/arrow-3.png') no-repeat right #252525;
 }
 
 img.special{
@@ -71,84 +71,17 @@ img.special{
     /*margin: 5% 0 5% 0;*/
 }
 
-.multiselect {
-    width: 200px;
-}
-.selectBox {
-    position: relative;
-}
-.selectBox select {
-    width: 100%;
-    font-weight: bold;
-}
-.overSelect {
-    position: absolute;
-    left: 0; right: 0; top: 0; bottom: 0;
-}
 #checkboxes {
-    position: absolute;
-    display: none;
-    border: 1px #dadada solid;
+    display: block;
+    border: 2px #dadada solid;
     background-color: #252525;
 }
 #checkboxes label {
     display: block;
 }
-#checkboxes label:hover {
-    background-color: #1e90ff;
-}
 
-/*below code from: http://jsfiddle.net/leaverou/CGP87/light/*/
-.rating {
-    float:left;
-}
-
-.rating:not(:checked) > input {
-    position:absolute;
-    clip:rect(0,0,0,0);
-}
-
-.rating:not(:checked) > label {
-    float:right;
-    width:1em;
-    padding:0 .1em;
-    overflow:hidden;
-    white-space:nowrap;
-    cursor:pointer;
-    font-size:200%;
-    line-height:1.2;
-    color:#ddd;
-    text-shadow:1px 1px #bbb, 2px 2px #666, .1em .1em .2em rgba(0,0,0,.5);
-}
-
-.rating:not(:checked) > label:before {
-    content: '★ ';
-}
-
-.rating > input:checked ~ label {
-    color: #f70;
-    text-shadow:1px 1px #c60, 2px 2px #940, .1em .1em .2em rgba(0,0,0,.5);
-}
-
-.rating:not(:checked) > label:hover,
-.rating:not(:checked) > label:hover ~ label {
-    color: gold;
-    text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
-}
-
-.rating > input:checked + label:hover,
-.rating > input:checked + label:hover ~ label,
-.rating > input:checked ~ label:hover,
-.rating > input:checked ~ label:hover ~ label,
-.rating > label:hover ~ input:checked ~ label {
-    color: #ea0;
-    text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
-}
-
-.rating > label:active {
-    position:relative;
-    top:2px;
-    left:2px;
+td {
+    vertical-align: top;
 }
 
 #assessment {
