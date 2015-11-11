@@ -131,6 +131,7 @@ function clearAssessmentForm() {
     var element = document.getElementById('readerDropDown');
     element.value = currentReader;
     disableLocationCheckboxes(true);
+    $("#completeFailureNo").prop("checked", true)
 }
 
 function getCheckedLocations() {
@@ -229,10 +230,12 @@ function getCurrentNeedleImageID() {
 function setNeedleImage(imageId) {
     var imageToSwap = $('#imageToSwap');
     var src = imageToSwap.attr('src');
+    if(src == "")
+        src = "gifs/Case11_15_before.gif"
     src = src.replace(/_[0-9]*_/, "_"+imageId+"_");
     imageToSwap.attr('src', src);
     $("#registrationMode option:eq(1)").attr("selected", "selected");
-    setRegistrationMode(false);
+    setRegistrationMode(true);
     clearAssessmentForm();
     updateAssessmentStatus(getCurrentCaseID(), imageId);
 }
