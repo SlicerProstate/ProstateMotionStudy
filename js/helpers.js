@@ -109,11 +109,11 @@ function updateAssessmentStatus(caseID, needleID) {
     query.setQuery('select A where C=' + caseID + ' and D=' + needleID);
 
     query.send(function(response) {
-        data = response.getDataTable();
+        var data = response.getDataTable();
         //console.log(data);
         var textToShow = "ASSESSMENT";
         var color = "white";
-        if (data["Gf"].length == 1) {
+        if (data["Gf"].length > 0) {
             $("#assessmentForm :input").prop('disabled', true);
             color = 'green';
             textToShow = "ASSESSMENT: Already assessed!";
@@ -211,7 +211,7 @@ function addOption(element, value) {
 function setRegistrationMode(useRegistration) {
   var imageToSwap = $('#imageToSwap');
   var src = imageToSwap.attr('src');
-    if(useRegistration == "true") {
+    if(useRegistration == true || useRegistration == "true") {
         src = src.replace('before','after');         
     } else {
         src = src.replace('after','before');
