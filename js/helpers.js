@@ -51,7 +51,10 @@ $(document).ready(function() {
         } else if (currentReader == "") {
             alert("Please select current reader!")
         } else if (hematoma && locations.length == 0) {
-            alert("Please select hematoma locations!")
+          alert("Please select hematoma locations!")
+        } else if (hematoma && validLocationsChecked(locations) == false)  {
+          alert("Please select valid hematoma location(s) + direction."+
+                "\n(Apex, Left) or (Base, Right, Bottom)")
         } else {
             var url = buildURLFromForm();
             $("#submitLink").attr('href', url);
@@ -132,6 +135,22 @@ function clearAssessmentForm() {
     element.value = currentReader;
     disableLocationCheckboxes(true);
     $("#completeFailureNo").prop("checked", true)
+}
+
+function validLocationsChecked(locations) {
+    var isValid = false;
+    var validAreas = ["Apex", "Mid-gland", "Base"];
+    var validIndicators = ["Top", "Bottom", "Left", "Right"];
+    validAreas.forEach(function(area) {
+      if ($.inArray(area, locations) > -1) {
+        validIndicators.forEach(function(indicator) {
+          if ($.inArray(indicator, locations) > -1) {
+            isValid = true;
+          }
+        });
+      }
+    });
+    return isValid;
 }
 
 function getCheckedLocations() {
