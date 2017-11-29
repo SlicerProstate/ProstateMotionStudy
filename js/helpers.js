@@ -7,6 +7,7 @@
 var db = null;
 var prostateImageRoot = "gifs/Prostate/";
 var pelvisImageRoot = "gifs/Pelvis/";
+var csvFile = "patient_summary.csv";
 
 
 $(document).ready(function() {
@@ -31,10 +32,32 @@ function setupDatabaseConnection(name) {
     xhr.send();
 }
 
+function readTextFile(file) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.send();
+    return rawFile.responseText;
+}
+
 function setupPatients() {
+    var csv = readTextFile(csvFile);
+    var data = $.csv.toObjects(csv);
+
+    var validCaseIDs = [];
+    data.forEach(function(caseId) {
+        validCaseIDs.push(parseInt(caseId["caseId"]));
+    });
+
     var contents = db.exec("SELECT distinct caseID FROM Images ORDER BY caseID ASC");
+    var dbCases = [];
+    contents[0].values.forEach(function(entry) {
+        dbCases.push(entry[0]);
+    });
+
+    caseIds = dbCases.filter((n) => validCaseIDs.includes(n));
+
     var dropdown = $('#patientDropDown')[0];
-    setupDropDown(dropdown, contents[0].values);
+    setupDropDown(dropdown, caseIds);
     var patientId = dropdown.options[dropdown.selectedIndex];
     setPatientId(patientId.value);
 }
